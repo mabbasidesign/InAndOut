@@ -19,22 +19,23 @@ namespace InAndOut.Controllers
 
         public IActionResult Index()
         {
-            var objList = _db.Items;
-            return View(objList);
+            var itemList = _db.Items;
+            return View(itemList);
         }
 
+        // Get
         public IActionResult Create()
         {
             return View();
         }
 
+        // Post
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Item obj)
+        public IActionResult Create(Item item)
         {
-            _db.Items.Add(obj);
+            _db.Add(item);
             _db.SaveChanges();
-
             return RedirectToAction("Index");
         }
 
