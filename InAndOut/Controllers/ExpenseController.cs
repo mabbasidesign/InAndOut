@@ -1,5 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using InAndOut.Data;
+using InAndOut.Models;
+using InAndOut.Models.ViewModels;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,62 +13,58 @@ namespace InAndOut.Controllers
 {
     public class ExpenseController : Controller
     {
-        // GET: ExpenseController
-        public ActionResult Index()
+        public readonly ApplicationDbContext _db;
+
+        public ExpenseController(ApplicationDbContext db)
         {
-            return View();
+            _db = db;
         }
 
-        // GET: ExpenseController/Details/5
-        public ActionResult Details(int id)
+        // GET: ExpenseController
+        public IActionResult Index()
         {
-            return View();
-        }
+            var objList = _db.Expenses;
+
+            foreach(var obj in objList)
+            {
+                obj.ExpenseType = _db.ExpenseTypes.FirstOrDefault(u => u.Id == obj.ExpenseTypeId);
+            }
+
+            return View(objList);
+        }      
 
         // GET: ExpenseController/Create
-        public ActionResult Create()
+        public IActionResult Create()
         {
-            return View();
+            var expenseVM = new ExpenseVM
+            {
+                Expense = new Expense(),
+                TypeDropDown = _db.ExpenseTypes.Select(i => new SelectListItem
+                {
+                    Text = i.Name,
+                    Value = i.Id.ToString()
+                })
+            };
+            return View(expenseVM);
         }
 
         // POST: ExpenseController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public IActionResult Create(ExpenseVM expenseVM)
         {
-            try
+            if (ModelState.IsValid)
             {
-                return RedirectToAction(nameof(Index));
+                _db.Expenses.Add(expenseVM.Expense);
+                _db.SaveChanges();
+                return RedirectToAction("Index");
             }
-            catch
-            {
-                return View();
-            }
+            return View(expenseVM);
         }
-
-        // GET: ExpenseController/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: ExpenseController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+     
 
         // GET: ExpenseController/Delete/5
-        public ActionResult Delete(int id)
+        public IActionResult Delete(int id)
         {
             return View();
         }
@@ -72,7 +72,7 @@ namespace InAndOut.Controllers
         // POST: ExpenseController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public IActionResult Delete(int id, IFormCollection collection)
         {
             try
             {
