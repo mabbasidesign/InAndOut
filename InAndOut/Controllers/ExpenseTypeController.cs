@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using InAndOut.Data;
+using InAndOut.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -9,10 +11,18 @@ namespace InAndOut.Controllers
 {
     public class ExpenseTypeController : Controller
     {
+        private readonly ApplicationDbContext _db;
+
+        public ExpenseTypeController(ApplicationDbContext db)
+        {
+            _db = db;
+        }
+
         // GET: ExpenseTypeController
         public ActionResult Index()
         {
-            return View();
+            var objList = _db.ExpenseTypes;
+            return View(objList);
         }
 
         // GET: ExpenseTypeController/Details/5
@@ -22,66 +32,6 @@ namespace InAndOut.Controllers
         }
 
         // GET: ExpenseTypeController/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: ExpenseTypeController/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: ExpenseTypeController/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: ExpenseTypeController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: ExpenseTypeController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: ExpenseTypeController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+       
     }
 }
