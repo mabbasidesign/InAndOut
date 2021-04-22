@@ -46,6 +46,38 @@ namespace InAndOut.Controllers
             return View(obj);
         }
 
+        // GET:
+        public IActionResult Update(int? id)
+        {
+            if (id == null || id == 0)
+            {
+                return NotFound();
+            }
+
+            var obj = _db.ExpenseTypes.Find(id);
+
+            if (obj == null)
+            {
+                return NotFound();
+            }
+
+            return View(obj);
+        }
+
+        // POST: 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Update(ExpenseType obj)
+        {
+            if (ModelState.IsValid)
+            {
+                _db.ExpenseTypes.Update(obj);
+                _db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            return View(obj);
+        }
+
         // GET: ExpenseTypeController/Delete/5
         public ActionResult Delete(int id)
         {
