@@ -25,13 +25,46 @@ namespace InAndOut.Controllers
             return View(objList);
         }
 
-        // GET: ExpenseTypeController/Details/5
-        public ActionResult Details(int id)
+
+        // GET: ExpenseTypeController/Create
+        public IActionResult Create()
         {
             return View();
         }
 
-        // GET: ExpenseTypeController/Create
-       
+        // POST: ExpenseTypeController/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(ExpenseType obj)
+        {
+            if (ModelState.IsValid)
+            {
+                _db.ExpenseTypes.Add(obj);
+                _db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            return View(obj);
+        }
+
+        // GET: ExpenseTypeController/Delete/5
+        public ActionResult Delete(int id)
+        {
+            return View();
+        }
+
+        // POST: ExpenseTypeController/Delete/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Delete(int id, IFormCollection collection)
+        {
+            try
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                return View();
+            }
+        }
     }
 }
