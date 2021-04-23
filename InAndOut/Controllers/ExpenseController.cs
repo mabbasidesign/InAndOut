@@ -110,22 +110,36 @@ namespace InAndOut.Controllers
         // GET: ExpenseController/Delete/5
         public IActionResult Delete(int? id)
         {
-            return View();
+            if (id == null || id == 0)
+            {
+                return NotFound();
+            }
+
+            var obj = _db.Expenses.Find(id);
+
+            if (obj == null)
+            {
+                return NotFound();
+            }
+
+            return View(obj);
         }
 
         // POST: ExpenseController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult DeletePost(int id, IFormCollection collection)
+        public IActionResult DeletePost(int? id)
         {
-            try
+            var obj = _db.Expenses.Find(id);
+
+            if (obj == null)
             {
-                return RedirectToAction(nameof(Index));
+                return NotFound();
             }
-            catch
-            {
-                return View();
-            }
+
+            _db.Expenses.Remove(obj);
+            _db.SaveChanges();
+            return RedirectToAction("Index");
         }
     }
 }
