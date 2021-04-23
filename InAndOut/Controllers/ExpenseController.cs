@@ -66,19 +66,7 @@ namespace InAndOut.Controllers
         // GET: Update
         public IActionResult Update(int? id)
         {
-            if (id == null || id == 0)
-            {
-                return NotFound();
-            }
-
-            var obj = _db.Expenses.Find(id);
-
-            if (obj == null)
-            {
-                return NotFound();
-            }
-
-            var expenseVM = new ExpenseVM
+            var expenseVM = new ExpenseVM()
             {
                 Expense = new Expense(),
                 TypeDropDown = _db.ExpenseTypes.Select(i => new SelectListItem
@@ -87,6 +75,19 @@ namespace InAndOut.Controllers
                     Value = i.Id.ToString()
                 })
             };
+
+            if (id == null || id == 0)
+            {
+                return NotFound();
+            }
+
+            expenseVM.Expense = _db.Expenses.Find(id);
+
+            if (expenseVM.Expense == null)
+            {
+                return NotFound();
+            }
+
             return View(expenseVM);
         }
 
@@ -115,7 +116,7 @@ namespace InAndOut.Controllers
         // POST: ExpenseController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete(int id, IFormCollection collection)
+        public IActionResult DeletePost(int id, IFormCollection collection)
         {
             try
             {
