@@ -61,10 +61,53 @@ namespace InAndOut.Controllers
             }
             return View(expenseVM);
         }
+
+
+        // GET: Update
+        public IActionResult Update(int? id)
+        {
+            if (id == null || id == 0)
+            {
+                return NotFound();
+            }
+
+            var obj = _db.Expenses.Find(id);
+
+            if (obj == null)
+            {
+                return NotFound();
+            }
+
+            var expenseVM = new ExpenseVM
+            {
+                Expense = new Expense(),
+                TypeDropDown = _db.ExpenseTypes.Select(i => new SelectListItem
+                {
+                    Text = i.Name,
+                    Value = i.Id.ToString()
+                })
+            };
+            return View(expenseVM);
+        }
+
+
+        // POST: Update
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Update(ExpenseVM expenseVM)
+        {
+            if (ModelState.IsValid)
+            {
+                _db.Expenses.Update(expenseVM.Expense);
+                _db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            return View(expenseVM);
+        }
      
 
         // GET: ExpenseController/Delete/5
-        public IActionResult Delete(int id)
+        public IActionResult Delete(int? id)
         {
             return View();
         }
